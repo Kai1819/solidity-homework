@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetaNFT 拍卖市场 · 全流程函数调用图（Sepolia 链上）</title>
+<style>
+  :root {
+    --bg: #F1EFE8;
+    --card: #FFFFFF;
+    --ink: #444441;
+    --ink-soft: #6B6A66;
+    --ink-faint: #9A9893;
+    --line: #B4B2A9;
+    --line-soft: #D8D6CE;
+    --accent-purple: #EEEDFE;
+    --accent-purple-line: #C7C4F8;
+    --accent-green: #DFF5ED;
+    --accent-green-line: #5DCAA5;
+    --accent-blue: #E4EFFB;
+    --accent-blue-line: #85B7EB;
+    --accent-pink: #FCE9EF;
+    --accent-pink-line: #E8A9BF;
+    --accent-amber: #FAEEDA;
+    --accent-amber-line: #E3C282;
+    --green-deep: #085041;
+    --blue-deep: #1E4E7B;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+    padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F4F2EB 100%);
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 28px 30px;
+    animation: fadeUp .5s ease both;
+  }
+  .hero h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .hero h1 span { color: var(--blue-deep); }
+  .hero p { margin-top: 6px; color: var(--ink-soft); font-size: 14px; }
+  .hero .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--mono); font-size: 12px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px; color: var(--ink);
+  }
+  .chip b { color: var(--green-deep); font-weight: 600; }
+
+  /* Section title */
+  .sec {
+    margin-top: 34px; display: flex; align-items: baseline; gap: 10px;
+    border-bottom: 2px solid var(--line); padding-bottom: 8px;
+  }
+  .sec .num {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff;
+    background: var(--blue-deep); border-radius: 6px; padding: 2px 8px;
+  }
+  .sec h2 { font-size: 18px; font-weight: 700; }
+  .sec .desc { font-size: 13px; color: var(--ink-faint); }
+
+  /* Chain status cards */
+  .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 16px; }
+  .stat {
+    background: var(--card); border: 1px solid var(--line-soft);
+    border-radius: 12px; padding: 14px 16px;
+    animation: fadeUp .5s ease both;
+  }
+  .stat .k { font-size: 12px; color: var(--ink-faint); }
+  .stat .v { font-family: var(--mono); font-size: 13px; margin-top: 4px; word-break: break-all; color: var(--ink); }
+  .stat .v.ok { color: var(--green-deep); font-weight: 600; }
+  .stat .v.warn { color: #8a6d1a; }
+  .stat .extra { font-size: 12px; color: var(--ink-soft); margin-top: 3px; }
+
+  /* Auction rows */
+  .auc-table { margin-top: 16px; border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .auc-row { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  .auc-row:last-child { border-bottom: none; }
+  .auc-row.head { background: #F7F6F1; color: var(--ink-faint); font-size: 12px; }
+  .auc-row .mono { font-family: var(--mono); font-size: 12px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 999px; padding: 1px 8px; margin-left: 4px; }
+  .tag.eth { background: var(--accent-amber); color: #7a5a12; border: 1px solid var(--accent-amber-line); }
+  .tag.usdc { background: var(--accent-blue); color: var(--blue-deep); border: 1px solid var(--accent-blue-line); }
+
+  /* Flow stage */
+  .stage {
+    margin-top: 20px; background: var(--card);
+    border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden;
+    animation: fadeUp .5s ease both;
+  }
+  .stage-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; background: #F7F6F1; border-bottom: 1px solid var(--line-soft);
+  }
+  .stage-head .stepno {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff;
+  }
+  .stage-head h3 { font-size: 16px; font-weight: 700; }
+  .stage-head .who { font-size: 12px; color: var(--ink-faint); margin-left: auto; text-align: right; }
+
+  .stage-body { padding: 18px 20px; }
+  .flow-line {
+    display: flex; gap: 12px; margin-bottom: 14px;
+  }
+  .flow-line:last-child { margin-bottom: 0; }
+  .flow-line .badge {
+    flex-shrink: 0; width: 68px; font-size: 11px; font-weight: 600; text-align: center;
+    align-self: flex-start; border-radius: 6px; padding: 3px 0; margin-top: 2px;
+  }
+  .badge.front { background: var(--accent-purple); color: #4c48a8; border: 1px solid var(--accent-purple-line); }
+  .badge.chain { background: var(--accent-green); color: var(--green-deep); border: 1px solid var(--accent-green-line); }
+  .badge.event { background: var(--accent-pink); color: #8f3a58; border: 1px solid var(--accent-pink-line); }
+  .badge.state { background: var(--accent-amber); color: #7a5a12; border: 1px solid var(--accent-amber-line); }
+
+  .flow-line .box { flex: 1; min-width: 0; }
+  .code {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+    background: #FBFBF8; border: 1px solid var(--line-soft); border-radius: 8px;
+    padding: 10px 14px; overflow-x: auto; white-space: pre;
+  }
+  .code .fn { color: var(--blue-deep); font-weight: 600; }
+  .code .kw { color: #8f3a58; }
+  .code .cmt { color: var(--ink-faint); }
+  .code .arrow { color: var(--green-deep); font-weight: 700; }
+  .note { font-size: 12.5px; color: var(--ink-soft); margin-top: 6px; }
+  .note b { color: var(--ink); }
+
+  /* legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 18px; font-size: 12px; color: var(--ink-soft); }
+  .legend .lg { display: flex; align-items: center; gap: 6px; }
+  .legend .dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--line); }
+
+  /* Role badge (in stage head) */
+  .rbadge { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .rbadge.admin { background: var(--accent-purple); color: #4c48a8; border: 1px solid var(--accent-purple-line); }
+  .rbadge.seller { background: var(--accent-green); color: var(--green-deep); border: 1px solid var(--accent-green-line); }
+  .rbadge.buyer { background: var(--accent-pink); color: #8f3a58; border: 1px solid var(--accent-pink-line); }
+  .rbadge.any { background: var(--accent-amber); color: #7a5a12; border: 1px solid var(--accent-amber-line); }
+  .rbadge.chainrole { background: #F3F2EC; color: var(--ink-soft); border: 1px solid var(--line); }
+
+  /* Three-role lanes */
+  .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .role-card {
+    background: var(--card); border: 1px solid var(--line-soft); border-radius: 12px;
+    padding: 14px 16px; animation: fadeUp .5s ease both;
+  }
+  .role-card .rhead { display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--line-soft); }
+  .role-card .rhead .rno { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .role-card .rhead .rt { font-size: 14px; font-weight: 700; }
+  .role-card .rhead .rs { font-size: 11px; color: var(--ink-faint); }
+  .role-node { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line-soft); }
+  .role-node:last-child { border-bottom: none; }
+  .role-node .n {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; margin-top: 1px;
+  }
+  .role-node .t b { display: block; font-size: 12.5px; font-weight: 600; }
+  .role-node .t span { display: block; color: var(--ink-faint); font-size: 11px; margin-top: 1px; }
+  .role-node .t .to { display: inline-block; margin-top: 3px; font-size: 10.5px; font-weight: 600; color: var(--ink-soft); border-radius: 4px; padding: 0 6px; }
+  .to.to-seller { background: var(--accent-green); border: 1px solid var(--accent-green-line); }
+  .to.to-buyer { background: var(--accent-pink); border: 1px solid var(--accent-pink-line); }
+  .to.to-admin { background: var(--accent-purple); border: 1px solid var(--accent-purple-line); }
+  .to.to-chain { background: #F3F2EC; border: 1px solid var(--line); }
+  .role-card .rel { margin-top: 10px; background: #F7F6F1; border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: var(--ink-soft); }
+  .role-card .rel b { color: var(--ink); }
+
+  /* Interaction timeline table */
+  .map-table { margin-top: 16px; border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .map-table table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .map-table th, .map-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  .map-table th { background: #F7F6F1; color: var(--ink-faint); font-weight: 600; font-size: 12px; white-space: nowrap; }
+  .map-table tr:last-child td { border-bottom: none; }
+  .map-table code { font-family: var(--mono); font-size: 11.5px; background: #F3F2EC; border-radius: 4px; padding: 1px 5px; color: var(--blue-deep); }
+  .map-table .fromto { white-space: nowrap; }
+
+  @media (max-width: 760px) {
+    .role-grid { grid-template-columns: 1fr; }
+  }
+
+  /* footer table */
+  .sig-table { margin-top: 16px; border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .sig-table table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .sig-table th, .sig-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  .sig-table th { background: #F7F6F1; color: var(--ink-faint); font-weight: 600; font-size: 12px; }
+  .sig-table tr:last-child td { border-bottom: none; }
+  .sig-table code { font-family: var(--mono); font-size: 12px; background: #F3F2EC; border-radius: 4px; padding: 1px 6px; color: var(--blue-deep); }
+
+  footer { margin-top: 40px; text-align: center; font-size: 12px; color: var(--ink-faint); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 19px; }
+    .flow-line { flex-direction: column; gap: 6px; }
+    .flow-line .badge { width: auto; align-self: flex-start; }
+    .auc-row { grid-template-columns: 70px 1fr; }
+    .auc-row.head { display: none; }
+    .stage-head { flex-wrap: wrap; }
+    .stage-head .who { width: 100%; text-align: left; margin-left: 42px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <h1>MetaNFT 拍卖市场 · <span>全流程函数调用图</span></h1>
+    <p>从管理员铸造 NFT → 启动拍卖 → 买家竞拍 → 结算，前端（Next.js + ethers v6）与链上合约（Solidity）逐层调用关系。数据为 Sepolia 测试网链上实测（homework03，2026-08-03 区块 11407408）。</p>
+    <div class="meta">
+      <span class="chip">拍卖代理 <b>0x825Eaa…935DB</b> → V1</span>
+      <span class="chip">MetaNFT <b>0xE24e…f720</b></span>
+      <span class="chip">ProxyAdmin <b>0xa73d…b9a</b></span>
+      <span class="chip">ETH Oracle <b>0x694A…5306</b> (Chainlink)</span>
+      <span class="chip">区块 <b>11,407,408</b></span>
+    </div>
+  </header>
+
+  <!-- ============ CHAIN STATUS ============ -->
+  <div class="sec"><span class="num">链上</span><h2>合约与拍卖现状</h2><span class="desc">Sepolia 实测（2026-08-03，区块 11407408）</span></div>
+  <div class="grid4">
+    <div class="stat">
+      <div class="k">拍卖合约（透明代理）</div>
+      <div class="v ok">MetaNFTAuctionTransparentV1</div>
+      <div class="extra">0x825Eaa7654…935DB → 实现 0xB356dEbb…11E0</div>
+    </div>
+    <div class="stat">
+      <div class="k">MetaNFT（ERC721）</div>
+      <div class="v ok">MetaNFT / MNFT</div>
+      <div class="extra">0xE24e475F44…f720 · 管理员持仓 1</div>
+    </div>
+    <div class="stat">
+      <div class="k">USDC（MockERC20）</div>
+      <div class="v warn">0xAA7F0E42…45b4</div>
+      <div class="extra">auction[0] 的支付代币（env/localStorage 配置）</div>
+    </div>
+    <div class="stat">
+      <div class="k">ETH/USD Oracle</div>
+      <div class="v ok">Chainlink 真实喂价</div>
+      <div class="extra">0x694AA176…DC325306 · $1,869</div>
+    </div>
+  </div>
+
+  <div class="auc-table">
+    <div class="auc-row head">
+      <div>拍卖 ID</div><div>模式 / 状态</div><div>关键状态</div>
+    </div>
+    <div class="auc-row">
+      <div class="mono">#0</div>
+      <div>USDC <span class="tag usdc">USDC</span> · nftId=1 · $100 起拍 · 1000s</div>
+      <div class="mono">已结束 · 最高出价 111 USDC · bidder 0x4a83…549C</div>
+    </div>
+  </div>
+
+  <!-- ============ THREE ROLES OVERVIEW ============ -->
+  <div class="sec"><span class="num">角色</span><h2>三角色流程总览</h2><span class="desc">管理员 · 拍卖方（卖家） · 买方 —— 各自流程节点与协作关系</span></div>
+
+  <div class="role-grid">
+    <!-- 管理员 -->
+    <div class="role-card">
+      <div class="rhead">
+        <div class="rno" style="background:#8f7cf0;">A</div>
+        <div>
+          <div class="rt">管理员 Admin</div>
+          <div class="rs">平台运营者 · onlyOwner 权限（owner）</div>
+        </div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#8f7cf0;">1</div>
+        <div class="t"><b>初始化部署</b><span>部署 MetaNFT / USDC / Oracle（/setup 一键）</span><span class="to to-chain">→ 链上合约</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#8f7cf0;">2</div>
+        <div class="t"><b>配置价格源</b><span>setTokenOracle → Chainlink 喂价</span><span class="to to-chain">→ 拍卖合约</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#8f7cf0;">3</div>
+        <div class="t"><b>启动拍卖</b><span>start()：写入 seller / 起拍价 / 支付代币</span><span class="to to-seller">→ 拍卖方</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#8f7cf0;">4</div>
+        <div class="t"><b>运营监控</b><span>/admin 列表 · 结算入口 · 改 oracle</span><span class="to to-chain">→ 拍卖合约</span></div>
+      </div>
+      <div class="rel">⚠️ 合约中 <code>start()</code> / <code>setTokenOracle()</code> 仅 <b>onlyOwner</b> 可调；卖家地址作为参数传入，可以是任何账户。</div>
+    </div>
+
+    <!-- 拍卖方 -->
+    <div class="role-card">
+      <div class="rhead">
+        <div class="rno" style="background:#5DCAA5;">S</div>
+        <div>
+          <div class="rt">拍卖方 Seller</div>
+          <div class="rs">NFT 持有者 · 出让人</div>
+        </div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#5DCAA5;">1</div>
+        <div class="t"><b>铸造 / 持有 NFT</b><span>mint(to, tokenURI_)（onlyOwner）→ 成为 ownerOf</span><span class="to to-chain">→ MetaNFT</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#5DCAA5;">2</div>
+        <div class="t"><b>授权拍卖合约</b><span>setApprovalForAll(auctionAddr, true)</span><span class="to to-chain">→ MetaNFT</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#5DCAA5;">3</div>
+        <div class="t"><b>设定拍品与价格</b><span>填 seller / nftId / 起拍价 / 支付代币</span><span class="to to-admin">→ 管理员</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#5DCAA5;">4</div>
+        <div class="t"><b>接收拍款</b><span>end() 后 seller.transfer 到账（ETH/USDC）</span><span class="to to-chain">← 拍卖合约</span></div>
+      </div>
+      <div class="rel">若卖家即管理员本人（本示例 0x4E28…），角色 A 与 S 合一，但<b>权限与收款账户语义分离</b>。</div>
+    </div>
+
+    <!-- 买方 -->
+    <div class="role-card">
+      <div class="rhead">
+        <div class="rno" style="background:#F4C0D1;">B</div>
+        <div>
+          <div class="rt">买方 Bidder</div>
+          <div class="rs">竞拍人 · 出价与付款</div>
+        </div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#F4C0D1;">1</div>
+        <div class="t"><b>浏览拍卖 / 读价格</b><span>auctions() + getPriceInDollar()</span><span class="to to-chain">→ 拍卖合约</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#F4C0D1;">2</div>
+        <div class="t"><b>授权支付代币</b><span>approve(auctionAddr, MaxUint256)（USDC 模式）</span><span class="to to-chain">→ USDC</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#F4C0D1;">3</div>
+        <div class="t"><b>出价竞拍</b><span>bid(id, amount)（ETH 带 msg.value / USDC transferFrom）</span><span class="to to-chain">→ 拍卖合约</span></div>
+      </div>
+      <div class="role-node">
+        <div class="n" style="background:#F4C0D1;">4</div>
+        <div class="t"><b>被超价退款 / 拍得</b><span>退保证金（ETH/USDC）→ end() 收 NFT</span><span class="to to-chain">← 拍卖合约</span></div>
+      </div>
+      <div class="rel">⚠️ 出价模式必须与拍卖启动时选的支付代币一致，否则合约在零地址调 <code>decimals()</code> 直接 revert（<code>require(false)</code>）。</div>
+    </div>
+  </div>
+
+  <!-- ============ INTERACTION MAP ============ -->
+  <div class="sec"><span class="num">互动</span><h2>角色互动时序 · 信息流转</h2><span class="desc">谁 → 谁 · 传什么信息 · 调什么函数（按业务先后排序）</span></div>
+  <div class="map-table">
+    <table>
+      <tr><th>#</th><th>发起方</th><th>动作 / 信息流</th><th>接收方</th><th>合约函数 / 数据</th></tr>
+      <tr>
+        <td>①</td><td class="fromto"><span class="rbadge admin">管理员</span></td>
+        <td>部署辅助合约，将地址写入 localStorage（<code>auction.config</code>）</td>
+        <td class="fromto"><span class="rbadge chainrole">链上</span></td>
+        <td><code>ContractFactory.deploy()</code> ×3</td>
+      </tr>
+      <tr>
+        <td>②</td><td class="fromto"><span class="rbadge admin">管理员</span></td>
+        <td>配置 ETH / USDC → Chainlink 喂价映射</td>
+        <td class="fromto"><span class="rbadge chainrole">拍卖合约</span></td>
+        <td><code>setTokenOracle(token, oracle)</code></td>
+      </tr>
+      <tr>
+        <td>③</td><td class="fromto"><span class="rbadge admin">管理员</span></td>
+        <td>铸造 NFT 给卖家，成为 owner（信息：tokenId 归属 + 元数据 URI）</td>
+        <td class="fromto"><span class="rbadge chainrole">MetaNFT</span></td>
+        <td><code>mint(to, tokenURI_)</code> → 事件 <code>MintNftToken</code> / <code>Transfer</code></td>
+      </tr>
+      <tr>
+        <td>④</td><td class="fromto"><span class="rbadge seller">拍卖方</span></td>
+        <td>授权拍卖合约可操作该 NFT（信息：operator=auctionAddr）</td>
+        <td class="fromto"><span class="rbadge chainrole">MetaNFT</span></td>
+        <td><code>setApprovalForAll(auctionAddr, true)</code></td>
+      </tr>
+      <tr>
+        <td>⑤</td><td class="fromto"><span class="rbadge admin">管理员</span></td>
+        <td>代为启动拍卖（信息：seller / 拍品 / 起拍价 / 支付代币）→ <span class="rbadge seller">拍卖方</span> 的 NFT 锁定入合约</td>
+        <td class="fromto"><span class="rbadge chainrole">拍卖合约</span></td>
+        <td><code>start(seller, nftId, nft, price, dur, token)</code> → <code>transferFrom</code></td>
+      </tr>
+      <tr>
+        <td>⑥</td><td class="fromto"><span class="rbadge buyer">买方</span></td>
+        <td>浏览拍卖、读实时美元价格（信息：起拍价 / 最高出价 / 汇率）</td>
+        <td class="fromto"><span class="rbadge chainrole">拍卖合约</span></td>
+        <td><code>auctions(id)</code> + <code>getPriceInDollar()</code></td>
+      </tr>
+      <tr>
+        <td>⑦</td><td class="fromto"><span class="rbadge buyer">买方</span></td>
+        <td>（USDC 模式）授权拍卖合约划扣代币</td>
+        <td class="fromto"><span class="rbadge chainrole">USDC</span></td>
+        <td><code>approve(auctionAddr, MaxUint256)</code></td>
+      </tr>
+      <tr>
+        <td>⑧</td><td class="fromto"><span class="rbadge buyer">买方</span></td>
+        <td>出价（信息：金额）→ 校验 ≥ 起拍价、&gt; 当前最高价；若被超价 → <span class="rbadge buyer">原买方</span> 退款</td>
+        <td class="fromto"><span class="rbadge chainrole">拍卖合约</span></td>
+        <td><code>bid(id, amount)</code> → <code>transfer / transferFrom</code></td>
+      </tr>
+      <tr>
+        <td>⑨</td><td class="fromto"><span class="rbadge any">任意调用</span></td>
+        <td>到期结算：NFT → <span class="rbadge buyer">买方</span>；拍款 → <span class="rbadge seller">拍卖方</span></td>
+        <td class="fromto"><span class="rbadge chainrole">拍卖合约</span></td>
+        <td><code>end(id)</code> → <code>transferFrom</code> + <code>transfer</code></td>
+      </tr>
+      <tr>
+        <td>⑩</td><td class="fromto"><span class="rbadge buyer">买方</span><span class="rbadge seller">拍卖方</span></td>
+        <td>查看资产：扫描 Transfer 事件重建持有集合、参与记录</td>
+        <td class="fromto"><span class="rbadge chainrole">MetaNFT</span></td>
+        <td><code>chunkedGetLogs()</code> / <code>useAuctions()</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ============ STAGE 0 ============ -->
+  <div class="sec"><span class="num">0</span><h2>初始化（一次性）</h2><span class="desc">/setup 向导 · 部署辅助合约并配置价格源</span></div>
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stepno" style="background:#8f7cf0;">0</div>
+      <h3>部署 MetaNFT / USDC / Oracle + 配置 Chainlink 价格源</h3>
+      <span class="who"><span class="rbadge admin">管理员</span><span class="rbadge chainrole">链上</span></span>
+    </div>
+    <div class="stage-body">
+      <div class="flow-line">
+        <div class="badge front">前端</div>
+        <div class="box">
+          <div class="code"><span class="cmt">// SetupWizard → useSetup.deployAll()</span>
+<span class="fn">deployAllAux</span>(signer)  <span class="arrow">→</span>  <span class="fn">ContractFactory.deploy</span>() <span class="cmt">×3（MetaNFT / MockERC20 / MockOracle）</span>
+<span class="fn">configureOracles</span>()     <span class="arrow">→</span>  <span class="fn">auction.setTokenOracle</span>(token, oracle)</div>
+          <div class="note">地址写入 <b>localStorage</b>（<code>auction.config</code>）；前端 <b>env &gt; localStorage</b> 两级解析。Chainlink 一键按钮：<code>CHAINLINK_SEPOLIA_FEEDS</code></div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge chain">合约</div>
+        <div class="box">
+          <div class="code"><span class="fn">setTokenOracle</span>(<span class="kw">address</span> token, <span class="kw">address</span> oracle) external onlyOwner <span class="cmt">// MetaNFTAuctionBase</span>
+  tokenToOracle[token] = oracle;   <span class="cmt">// token=0x0 表示 ETH</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STAGE 1 ============ -->
+  <div class="sec"><span class="num">1</span><h2>管理员铸造 NFT</h2><span class="desc">首页「铸造 NFT」→ MintPanel</span></div>
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stepno" style="background:#5DCAA5;">1</div>
+      <h3>mint(to, tokenURI_)（仅 owner，tokenId 合约内自增）</h3>
+      <span class="who"><span class="rbadge admin">管理员</span><span class="rbadge seller">拍卖方</span></span>
+    </div>
+    <div class="stage-body">
+      <div class="flow-line">
+        <div class="badge front">前端</div>
+        <div class="box">
+          <div class="code"><span class="cmt">// MintPanel.handleMintTokenURI → useMetaNFT.mintTokenURI(tokenURI)</span>
+<span class="fn">useMetaNFT.mintTokenURI</span>(tokenURI)  <span class="arrow">→</span> contract<span class="fn">.mint</span>(account, tokenURI) <span class="cmt">// 返回自增 tokenId</span>
+<span class="fn">refresh</span>()                          <span class="arrow">→</span> contract<span class="fn">.balanceOf</span>(account) <span class="cmt">// 更新持仓数</span></div>
+          <div class="note">合约实例来自 <code>useAuxContracts.getMetaNFTContract()</code>（env/localStorage 地址 + MetaNFTABI）。<b>homework03 无 mintNext / 无指定 id 铸造</b>（与 hardhatV3Nft 不同）。</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge chain">合约</div>
+        <div class="box">
+          <div class="code"><span class="fn">mint</span>(address to, string memory tokenURI_) external onlyOwner returns (uint256) <span class="cmt">// MetaNFT (ERC721+Burnable+Ownable)</span>
+  _mint(to, _netxtId);  _tokenURIs[tokenId] = tokenURI_;  <span class="kw">return</span> _netxtId++;  <span class="cmt">// id 从 1 自增</span></div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge event">事件</div>
+        <div class="box">
+          <div class="code"><span class="fn">MintNftToken</span>(to, tokenId, tokenURI) + <span class="fn">Transfer</span>(0x000…0, to, tokenId)</div>
+          <div class="note">该事件被 /assets 页用 <b>chunkedGetLogs</b>（分块扫描突破 10000 块限制）重建「我持有的 NFT」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STAGE 2 ============ -->
+  <div class="sec"><span class="num">2</span><h2>管理员启动拍卖</h2><span class="desc">/admin → StartAuctionModal（两步：授权 NFT → start）</span></div>
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stepno" style="background:#85B7EB;">2</div>
+      <h3>setApprovalForAll → start（选 ETH 或 USDC 支付模式）</h3>
+      <span class="who"><span class="rbadge seller">拍卖方授权</span><span class="rbadge admin">管理员启动</span></span>
+    </div>
+    <div class="stage-body">
+      <div class="flow-line">
+        <div class="badge front">前端 Step1</div>
+        <div class="box">
+          <div class="code"><span class="cmt">// StartAuctionModal.checkApproval</span>
+<span class="fn">useMetaNFT.isApprovedForAll</span>(seller)  <span class="arrow">→</span> contract<span class="fn">.isApprovedForAll</span>(owner, auctionAddr)
+<span class="cmt">// 授权按钮</span>
+<span class="fn">useMetaNFT.setApprovalForAll</span>(true)    <span class="arrow">→</span> contract<span class="fn">.setApprovalForAll</span>(auctionAddr, true)</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge front">前端 Step2</div>
+        <div class="box">
+          <div class="code"><span class="cmt">// handleSubmit → resolvePaymentToken()：eth→0x000…0 | usdc→getUsdcAddress()</span>
+<span class="fn">useAdmin.start</span>(seller, nftId, nft, price, dur, token)  <span class="arrow">→</span> contract<span class="fn">.start</span>(...)</div>
+          <div class="note"><b>homework03 基类从 V1 起即允许 ETH</b>：start() 无 <code>require(paymentToken != 0)</code> 校验（与 hardhatV3Nft 的 V1/V2 限制不同），paymentToken=0x0 直接代表 ETH 拍卖。</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge chain">合约</div>
+        <div class="box">
+          <div class="code"><span class="fn">start</span>(seller, nftId, nft, startingPriceInDollar, duration, paymentToken) external onlyOwner <span class="cmt">// MetaNFTAuctionBase</span>
+  <span class="kw">require</span>(nft != 0, "invalid nft");  <span class="kw">require</span>(duration >= 30, "invalidate duration");
+  auctions[auctionId] = Auction{...};            <span class="cmt">// startingPrice ×1e8 存储</span>
+  IERC721(nft)<span class="fn">.transferFrom</span>(seller, address(this), nftId);  <span class="cmt">// NFT 锁定进合约</span>
+  auctionId++;   emit <span class="fn">StartBid</span>(auctionId);</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge state">前端刷新</div>
+        <div class="box">
+          <div class="code"><span class="fn">useAuctions.refresh</span>() <span class="arrow">→</span> auctionId() → <span class="fn">auctions</span>(i) + <span class="fn">isEnded</span>(i) <span class="arrow">→</span> <span class="fn">toAuctionView</span>()</div>
+          <div class="note">注意：ethers v6 <code>Result</code> 不能 spread，`toAuctionView` 需显式 named 重建</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STAGE 3 ============ -->
+  <div class="sec"><span class="num">3</span><h2>买家竞拍</h2><span class="desc">/auction/[id] → BidModal（ETH / USDC 双模式）</span></div>
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stepno" style="background:#F4C0D1;">3</div>
+      <h3>读价格 → 授权（USDC）→ bid</h3>
+      <span class="who"><span class="rbadge buyer">买方</span></span>
+    </div>
+    <div class="stage-body">
+      <div class="flow-line">
+        <div class="badge front">读取</div>
+        <div class="box">
+          <div class="code"><span class="fn">useAuction</span>(id) <span class="arrow">→</span> contract<span class="fn">.auctions</span>(id)
+<span class="fn">getPriceInDollar</span>(0x0) / <span class="fn">getPriceInDollar</span>(usdcAddr)  <span class="cmt">// 链上读 Chainlink 价格</span></div>
+          <div class="note">前端展示「ETH $1,869 / USDC $0.99」均来自合约 → 预言机。<b>ETH 价格源是真实 Chainlink Aggregator 地址（0x694A…）</b>；USDC 价格源为部署的 MockOracle（0x1215…，$1）。两者共用 <code>AggregatorV3Interface</code> 接口。</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge front">USDC 授权</div>
+        <div class="box">
+          <div class="code"><span class="cmt">// BidModal.handleApprove（needsApprove = allowance &lt; amount）</span>
+<span class="fn">useUSDC.approve</span>(auctionAddr, MaxUint256)  <span class="arrow">→</span> usdc<span class="fn">.approve</span>(auctionAddr, type(uint256).max)</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge chain">合约 bid</div>
+        <div class="box">
+          <div class="code"><span class="fn">bid</span>(auctionId_, amount) external payable <span class="cmt">// MetaNFTAuctionBase</span>
+  <span class="kw">bool</span> isEthBid = msg.value > 0;
+  <span class="kw">if</span> (isEthBid) {                       <span class="cmt">// ETH 分支（must match 启动时选 ETH）</span>
+    <span class="kw">require</span>(amount == msg.value, "amount mismatch");
+    bidPrice = _toUsd(msg.value, 18, getPriceInDollar(address(0)));
+  } <span class="kw">else</span> {                            <span class="cmt">// ERC20 分支（must match 启动时选 USDC）</span>
+    <span class="kw">require</span>(amount > 0, "invalid amount");
+    bidPrice = _toUsd(amount, <span class="fn">IERC20Metadata(paymentToken).decimals()</span>, getPriceInDollar(paymentToken));
+    IERC20(paymentToken)<span class="fn">.transferFrom</span>(msg.sender, address(this), amount);
+  }
+  <span class="kw">require</span>(startingPriceInDollar &lt; bidPrice, "invalid startingPrice");
+  <span class="kw">require</span>(highestBidInDollar &lt; bidPrice, "invalid highestBid");
+  <span class="kw">if</span> (被超价) { 原最高出价者退款（ETH: transfer / ERC20: transfer） }
+  highestBidder = msg.sender; highestBid = ...; highestBidInDollar = bidPrice; emit <span class="fn">Bid</span>(...)</div>
+          <div class="note"><b>⚠️ 常见坑</b>：ETH 拍卖（paymentToken=0x0）不能用 USDC 出价 —— 合约走 ERC20 分支会在零地址调 <code>decimals()</code> 直接 revert（无 message → 前端显示 <code>require(false)</code>）。<b>出价模式必须与拍卖启动时选的支付代币一致</b>。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STAGE 4 ============ -->
+  <div class="sec"><span class="num">4</span><h2>结算（拍卖到期）</h2><span class="desc">/admin · /auction/[id] → EndAuctionButton</span></div>
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stepno" style="background:#E3C282;">4</div>
+      <h3>end → NFT 转给买家 + 款项转给卖家</h3>
+      <span class="who"><span class="rbadge any">任意调用者</span><span class="rbadge seller">卖家收款</span><span class="rbadge buyer">买家收 NFT</span></span>
+    </div>
+    <div class="stage-body">
+      <div class="flow-line">
+        <div class="badge chain">合约</div>
+        <div class="box">
+          <div class="code"><span class="fn">end</span>(auctionId_) external <span class="cmt">// MetaNFTAuctionBase</span>
+  <span class="kw">require</span>(isEnded(auctionId_), "not ended");
+  <span class="kw">require</span>(highestBidder != 0, "no bids");           <span class="cmt">// 无人出价无法结算（合约缺陷 → ended-no-bid 只读警示）</span>
+  nft<span class="fn">.transferFrom</span>(address(this), highestBidder, nftId);   <span class="cmt">// NFT → 买家</span>
+  <span class="kw">if</span> (highestBidToken == 0x0) { seller<span class="fn">.transfer</span>(highestBid); }  <span class="cmt">// ETH 拍款 → 卖家</span>
+  <span class="kw">else</span> { IERC20(highestBidToken)<span class="fn">.transfer</span>(seller, highestBid); }  <span class="cmt">// USDC 拍款 → 卖家</span>
+  emit <span class="fn">EndBid</span>(auctionId_);</div>
+        </div>
+      </div>
+      <div class="flow-line">
+        <div class="badge front">前端</div>
+        <div class="box">
+          <div class="code"><span class="fn">EndAuctionButton</span> <span class="arrow">→</span> <span class="fn">useAuctionContract.getSignerContract().end</span>(auctionId) <span class="arrow">→</span> tx.wait() <span class="arrow">→</span> <span class="fn">refresh</span>()</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STAGE 5 ============ -->
+  <div class="sec"><span class="num">5</span><h2>查看资产</h2><span class="desc">/assets · 持有的 NFT + 参与的拍卖</span></div>
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stepno" style="background:#8fb3d9;">5</div>
+      <h3>chunkedGetLogs 扫 Transfer 事件重建持有集合</h3>
+      <span class="who"><span class="rbadge buyer">买方</span><span class="rbadge seller">拍卖方</span></span>
+    </div>
+    <div class="stage-body">
+      <div class="flow-line">
+        <div class="badge front">前端</div>
+        <div class="box">
+          <div class="code"><span class="fn">chunkedGetLogs</span>(provider, { address: metaNFT, topics: [Transfer] }, fromBlock, "latest")
+  <span class="cmt">// 快路径 → 超 10000 块则分块并发扫描 + 二分缩窗（突破 RPC 限制）</span>
+<span class="kw">for</span> (log of logs): parseLog → from/to/tokenId → owned Set 增删   <span class="cmt">// to==me 添加, from==me 删除</span>
+<span class="fn">useAuctions</span>() <span class="arrow">→</span> 我参与的拍卖 / 我卖出的 / 我拍得的</div>
+          <div class="note">部署块起点：<code>localAux.deployBlocks.metaNFT</code>（/setup 部署时记录，缺失回退 0）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SIGNATURES ============ -->
+  <div class="sec"><span class="num">签</span><h2>关键函数签名速查</h2><span class="desc">合约 MetaNFTAuctionTransparent(V1) / MetaNFTAuctionBase / MetaNFT / MockERC20</span></div>
+  <div class="sig-table">
+    <table>
+      <tr><th>合约</th><th>函数</th><th>说明</th></tr>
+      <tr><td>MetaNFTAuctionBase</td><td><code>start(address seller, uint256 nftId, address nft, uint256 startingPriceInDollar, uint256 duration, address paymentToken)</code></td><td>启动拍卖（onlyOwner；基类无 paymentToken 校验，V1 起支持 ETH=0x0）</td></tr>
+      <tr><td>MetaNFTAuctionBase</td><td><code>bid(uint256 auctionId_, uint256 amount) payable</code></td><td>出价；msg.value&gt;0 走 ETH 分支，否则 ERC20</td></tr>
+      <tr><td>MetaNFTAuctionBase</td><td><code>end(uint256 auctionId_)</code></td><td>到期结算</td></tr>
+      <tr><td>MetaNFTAuctionBase</td><td><code>setTokenOracle(address token, address oracle)</code></td><td>onlyOwner 配置价格源（token=0x0 为 ETH）</td></tr>
+      <tr><td>MetaNFTAuctionBase</td><td><code>getPriceInDollar(address token) view</code></td><td>读 Aggregator.latestRoundData()（ETH=真实 Chainlink / USDC=Mock）</td></tr>
+      <tr><td>MetaNFTAuctionTransparent</td><td><code>getVersion() view</code></td><td>链上实测返回 "MetaNFTAuctionTransparentV1"</td></tr>
+      <tr><td>MetaNFT</td><td><code>mint(address to, string tokenURI_)</code></td><td>铸造（onlyOwner；tokenId 合约内自增，返回新 id）</td></tr>
+      <tr><td>MetaNFT</td><td><code>setApprovalForAll(address operator, bool)</code></td><td>授权拍卖合约操作 NFT</td></tr>
+      <tr><td>MockERC20</td><td><code>approve(address spender, uint256)</code> / <code>mint(address, uint256)</code></td><td>USDC 授权 / 领取测试币</td></tr>
+    </table>
+  </div>
+
+  <!-- ============ LEGEND ============ -->
+  <div class="legend">
+    <span class="lg"><span class="dot" style="background:#EEEDFE;"></span> 前端调用（组件/Hook → ethers）</span>
+    <span class="lg"><span class="dot" style="background:#DFF5ED;"></span> 合约执行（Solidity 函数/逻辑）</span>
+    <span class="lg"><span class="dot" style="background:#FCE9EF;"></span> 链上事件</span>
+    <span class="lg"><span class="dot" style="background:#FAEEDA;"></span> 状态/数据流</span>
+    <span class="lg"><span class="dot" style="background:#EEEDFE; border-color:#C7C4F8;"></span> 管理员</span>
+    <span class="lg"><span class="dot" style="background:#DFF5ED; border-color:#5DCAA5;"></span> 拍卖方（卖家）</span>
+    <span class="lg"><span class="dot" style="background:#FCE9EF; border-color:#E8A9BF;"></span> 买方</span>
+    <span class="lg"><span class="dot" style="background:#F3F2EC; border-color:#B4B2A9;"></span> 链上合约</span>
+  </div>
+
+  <footer>MetaNFT Auction · Sepolia 链上全流程调用图 · homework03 校对版（2026-08-03，区块 11407408）</footer>
+</div>
+</body>
+</html>

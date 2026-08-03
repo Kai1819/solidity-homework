@@ -1,0 +1,84 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "MockOracle",
+  "sourceName": "contracts/mock/MockOracle.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "initialPrice_",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "latestRoundData",
+      "outputs": [
+        {
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        },
+        {
+          "internalType": "int256",
+          "name": "answer",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "updatedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint80",
+          "name": "answeredInRound",
+          "type": "uint80"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "price_",
+          "type": "int256"
+        }
+      ],
+      "name": "setPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600e575f5ffd5b50604051610134380380610134833981016040819052602b916031565b5f556047565b5f602082840312156040575f5ffd5b5051919050565b60e1806100535f395ff3fe6080604052348015600e575f5ffd5b5060043610603a575f3560e01c806398d5fdca14603e578063f7a30806146053578063feaf968c146064575b5f5ffd5b5f546040519081526020015b60405180910390f35b6062605e3660046095565b5f55565b005b5f546040805160018082526020820193909352429181018290526060810191909152608081019190915260a001604a565b5f6020828403121560a4575f5ffd5b503591905056fea26469706673582212205e1a64ba1811d0486428a439a2be6e8e48d969b36ef323b8a7bcc0006192d6f964736f6c634300081c0033",
+  "deployedBytecode": "0x6080604052348015600e575f5ffd5b5060043610603a575f3560e01c806398d5fdca14603e578063f7a30806146053578063feaf968c146064575b5f5ffd5b5f546040519081526020015b60405180910390f35b6062605e3660046095565b5f55565b005b5f546040805160018082526020820193909352429181018290526060810191909152608081019190915260a001604a565b5f6020828403121560a4575f5ffd5b503591905056fea26469706673582212205e1a64ba1811d0486428a439a2be6e8e48d969b36ef323b8a7bcc0006192d6f964736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/mock/MockOracle.sol",
+  "buildInfoId": "solc-0_8_28-6f93b983d968e02ddbcfb62e85e51670b306ef3c"
+}

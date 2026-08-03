@@ -1,0 +1,49 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-6f93b983d968e02ddbcfb62e85e51670b306ef3c",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "compilerType": "solc",
+  "toolVersions": {
+    "hardhat": "3.12.0"
+  },
+  "userSourceNameMap": {
+    "contracts/mock/MockOracle.sol": "project/contracts/mock/MockOracle.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/mock/MockOracle.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.28;\n\n/**\n * @notice 模拟 ChainLink DataFeed AggregatorV3Interface接口 预言机\n * \n * 测试/演示时：把 MockOracle 地址填进 setTokenOracle(token, mockOracleAddr) → 合约读到写死的价格。\n * 生产/真实时：把 Chainlink 官方 Aggregator Proxy 地址 填进同一个函数 → 合约读到去中心化预言机网络写入的真实价格。合约代码一行都不用改！\n */\ncontract MockOracle {\n    // 内部存储一个固定的价格\n    int256 private price;\n\n    /**\n     * @notice 构造器\n     * @param initialPrice_ 初始价格（如 2000 * 10^8 = $2000）\n     */\n    constructor(int256 initialPrice_) {\n        price = initialPrice_;\n    }\n\n    /**\n     * @notice 最新聚合价格（最新轮次数据），实现 Chainlink 的 AggregatorV3Interface 标准签名！\n     * @return roundId 轮次 ID\n     * @return answer 价格(需结合 decimals,如 1000.00 * 1e8)\n     * @return startedAt 本轮开始时间\n     * @return updatedAt 最近更新时间(防 stale 检查用)\n     * @return answeredInRound 应答轮次\n     */\n    function latestRoundData() external view \n        returns (\n            uint80 roundId,\n            int256 answer,\n            uint256 startedAt,\n            uint256 updatedAt,\n            uint80 answeredInRound\n        )\n    {\n        // 直接返回写死的价格；时间戳用当前区块时间\n        return (uint80(1), price, block.timestamp, block.timestamp, uint80(1));\n    }\n\n    /**\n     * @notice 手动改价（模拟价格波动）\n     * @param price_ 价格\n     */\n    function setPrice(int256 price_) external {\n        price = price_;\n    }\n\n    /**\n     * @notice 读当前价格\n     */\n    function getPrice() external view returns(int256) {\n        return price;\n    }\n}"
+      }
+    }
+  }
+}

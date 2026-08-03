@@ -1,0 +1,37 @@
+# Node modules
+/node_modules
+
+# Compilation output
+/dist
+
+# pnpm deploy output
+/bundle
+
+# Hardhat Build Artifacts
+/artifacts
+
+# Hardhat compilation (v2) support directory
+/cache
+
+# Typechain output
+/types
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Hardhat coverage reports
+/coverage
+
+# Foundry compilation output
+/forge-out
+
+# Gas snapshot files
+# 若需 CI gas 回归对比（forge snapshot --diff），请提交 .gas-snapshot，删掉下面一行
+/.gas-snapshot
+
+# Snapshot cheatcodes output
+/snapshots
+
+.workbuddy

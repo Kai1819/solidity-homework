@@ -1,2 +1,44 @@
 .DS_Store
 **/.DS_Store
+
+
+# ============================================================
+# homework03 项目规则（同步自 homework03/.gitignore）
+# ============================================================
+# Node modules
+homework03/node_modules
+
+# Compilation output
+homework03/dist
+
+# pnpm deploy output
+homework03/bundle
+
+# Hardhat Build Artifacts
+homework03/artifacts
+
+# Hardhat compilation (v2) support directory
+homework03/cache
+
+# Typechain output
+homework03/types
+
+# Environment files
+homework03/.env
+homework03/.env.*
+!homework03/.env.example
+
+# Hardhat coverage reports
+homework03/coverage
+
+# Foundry compilation output
+homework03/forge-out
+
+# Gas snapshot files
+# 若需 CI gas 回归对比（forge snapshot --diff），请提交 .gas-snapshot，删掉下面一行
+homework03/.gas-snapshot
+
+# Snapshot cheatcodes output
+homework03/snapshots
+
+homework03/.workbuddy

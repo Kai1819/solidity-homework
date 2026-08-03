@@ -1,0 +1,616 @@
+{
+  "contracts": {
+    "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy": {
+      "sourceName": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+      "contractName": "ERC1967Proxy",
+      "proxyChain": [],
+      "deployment": {
+        "min": 197087,
+        "max": 197099,
+        "avg": 197098,
+        "median": 197099,
+        "count": 38,
+        "runtimeSize": 212
+      },
+      "functions": null
+    },
+    "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol:ProxyAdmin": {
+      "sourceName": "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol",
+      "contractName": "ProxyAdmin",
+      "proxyChain": [],
+      "deployment": null,
+      "functions": {
+        "upgradeAndCall": {
+          "min": 39500,
+          "max": 39524,
+          "avg": 39521,
+          "median": 39524,
+          "count": 9
+        }
+      }
+    },
+    "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy": {
+      "sourceName": "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
+      "contractName": "TransparentUpgradeableProxy",
+      "proxyChain": [],
+      "deployment": {
+        "min": 1071365,
+        "max": 1071377,
+        "avg": 1071376,
+        "median": 1071377,
+        "count": 15,
+        "runtimeSize": 1876
+      },
+      "functions": null
+    },
+    "contracts/MetaNFT.sol:MetaNFT": {
+      "sourceName": "contracts/MetaNFT.sol",
+      "contractName": "MetaNFT",
+      "proxyChain": [],
+      "deployment": {
+        "min": 2049083,
+        "max": 2049083,
+        "avg": 2049083,
+        "median": 2049083,
+        "count": 50,
+        "runtimeSize": 8748
+      },
+      "functions": {
+        "approve": {
+          "min": 49066,
+          "max": 49078,
+          "avg": 49075,
+          "median": 49078,
+          "count": 4
+        },
+        "balanceOf": {
+          "min": 24406,
+          "max": 24406,
+          "avg": 24406,
+          "median": 24406,
+          "count": 2
+        },
+        "burn": {
+          "min": 29571,
+          "max": 29571,
+          "avg": 29571,
+          "median": 29571,
+          "count": 1
+        },
+        "mint": {
+          "min": 86238,
+          "max": 103362,
+          "avg": 102632,
+          "median": 103326,
+          "count": 49
+        },
+        "name": {
+          "min": 24438,
+          "max": 24438,
+          "avg": 24438,
+          "median": 24438,
+          "count": 1
+        },
+        "owner": {
+          "min": 23624,
+          "max": 23624,
+          "avg": 23624,
+          "median": 23624,
+          "count": 1
+        },
+        "ownerOf": {
+          "min": 24275,
+          "max": 24275,
+          "avg": 24275,
+          "median": 24275,
+          "count": 15
+        },
+        "setApprovalForAll": {
+          "min": 46706,
+          "max": 46730,
+          "avg": 46729,
+          "median": 46730,
+          "count": 37
+        },
+        "symbol": {
+          "min": 24460,
+          "max": 24460,
+          "avg": 24460,
+          "median": 24460,
+          "count": 1
+        },
+        "tokenURI": {
+          "min": 27260,
+          "max": 27260,
+          "avg": 27260,
+          "median": 27260,
+          "count": 2
+        },
+        "transferFrom": {
+          "min": 40836,
+          "max": 62736,
+          "avg": 53730,
+          "median": 53585,
+          "count": 7
+        }
+      }
+    },
+    "contracts/MetaNFTAuctionTransparent.sol:MetaNFTAuctionTransparent": {
+      "sourceName": "contracts/MetaNFTAuctionTransparent.sol",
+      "contractName": "MetaNFTAuctionTransparent",
+      "proxyChain": [],
+      "deployment": {
+        "min": 2205967,
+        "max": 2205967,
+        "avg": 2205967,
+        "median": 2205967,
+        "count": 15,
+        "runtimeSize": 9860
+      },
+      "functions": null
+    },
+    "contracts/MetaNFTAuctionTransparent.sol:MetaNFTAuctionTransparent (via @openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy)": {
+      "sourceName": "contracts/MetaNFTAuctionTransparent.sol",
+      "contractName": "MetaNFTAuctionTransparent",
+      "proxyChain": [
+        "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
+        "contracts/MetaNFTAuctionTransparent.sol:MetaNFTAuctionTransparent"
+      ],
+      "deployment": {
+        "min": 2205967,
+        "max": 2205967,
+        "avg": 2205967,
+        "median": 2205967,
+        "count": 15,
+        "runtimeSize": 9860
+      },
+      "functions": {
+        "getVersion": {
+          "min": 26784,
+          "max": 26784,
+          "avg": 26784,
+          "median": 26784,
+          "count": 1
+        },
+        "setTokenOracle": {
+          "min": 51762,
+          "max": 52002,
+          "avg": 51879,
+          "median": 51876,
+          "count": 4
+        },
+        "start": {
+          "min": 258631,
+          "max": 258631,
+          "avg": 258631,
+          "median": 258631,
+          "count": 1
+        }
+      }
+    },
+    "contracts/MetaNFTAuctionTransparentV2.sol:MetaNFTAuctionTransparentV2": {
+      "sourceName": "contracts/MetaNFTAuctionTransparentV2.sol",
+      "contractName": "MetaNFTAuctionTransparentV2",
+      "proxyChain": [],
+      "deployment": {
+        "min": 2231316,
+        "max": 2231316,
+        "avg": 2231316,
+        "median": 2231316,
+        "count": 5,
+        "runtimeSize": 9974
+      },
+      "functions": null
+    },
+    "contracts/MetaNFTAuctionTransparentV2.sol:MetaNFTAuctionTransparentV2 (via @openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy)": {
+      "sourceName": "contracts/MetaNFTAuctionTransparentV2.sol",
+      "contractName": "MetaNFTAuctionTransparentV2",
+      "proxyChain": [
+        "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
+        "contracts/MetaNFTAuctionTransparentV2.sol:MetaNFTAuctionTransparentV2"
+      ],
+      "deployment": {
+        "min": 2231316,
+        "max": 2231316,
+        "avg": 2231316,
+        "median": 2231316,
+        "count": 5,
+        "runtimeSize": 9974
+      },
+      "functions": {
+        "auctionId": {
+          "min": 28588,
+          "max": 28588,
+          "avg": 28588,
+          "median": 28588,
+          "count": 1
+        },
+        "auctions": {
+          "min": 52054,
+          "max": 52054,
+          "avg": 52054,
+          "median": 52054,
+          "count": 1
+        },
+        "bid": {
+          "min": 176278,
+          "max": 176278,
+          "avg": 176278,
+          "median": 176278,
+          "count": 1
+        },
+        "end": {
+          "min": 111962,
+          "max": 111962,
+          "avg": 111962,
+          "median": 111962,
+          "count": 1
+        },
+        "getVersion": {
+          "min": 26784,
+          "max": 26784,
+          "avg": 26784,
+          "median": 26784,
+          "count": 1
+        },
+        "newFeature": {
+          "min": 26828,
+          "max": 26828,
+          "avg": 26828,
+          "median": 26828,
+          "count": 1
+        },
+        "start": {
+          "min": 258619,
+          "max": 258619,
+          "avg": 258619,
+          "median": 258619,
+          "count": 1
+        },
+        "tokenToOracle": {
+          "min": 29168,
+          "max": 29168,
+          "avg": 29168,
+          "median": 29168,
+          "count": 1
+        }
+      }
+    },
+    "contracts/MetaNFTAuctionTransparentV3.sol:MetaNFTAuctionTransparentV3": {
+      "sourceName": "contracts/MetaNFTAuctionTransparentV3.sol",
+      "contractName": "MetaNFTAuctionTransparentV3",
+      "proxyChain": [],
+      "deployment": {
+        "min": 2439849,
+        "max": 2439849,
+        "avg": 2439849,
+        "median": 2439849,
+        "count": 7,
+        "runtimeSize": 10945
+      },
+      "functions": null
+    },
+    "contracts/MetaNFTAuctionTransparentV3.sol:MetaNFTAuctionTransparentV3 (via @openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy)": {
+      "sourceName": "contracts/MetaNFTAuctionTransparentV3.sol",
+      "contractName": "MetaNFTAuctionTransparentV3",
+      "proxyChain": [
+        "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy",
+        "contracts/MetaNFTAuctionTransparentV3.sol:MetaNFTAuctionTransparentV3"
+      ],
+      "deployment": {
+        "min": 2439849,
+        "max": 2439849,
+        "avg": 2439849,
+        "median": 2439849,
+        "count": 7,
+        "runtimeSize": 10945
+      },
+      "functions": {
+        "bid": {
+          "min": 176278,
+          "max": 176278,
+          "avg": 176278,
+          "median": 176278,
+          "count": 1
+        },
+        "end": {
+          "min": 111962,
+          "max": 111962,
+          "avg": 111962,
+          "median": 111962,
+          "count": 1
+        },
+        "getVersion": {
+          "min": 26784,
+          "max": 26784,
+          "avg": 26784,
+          "median": 26784,
+          "count": 1
+        },
+        "recoverNFT": {
+          "min": 70754,
+          "max": 70754,
+          "avg": 70754,
+          "median": 70754,
+          "count": 1
+        },
+        "start": {
+          "min": 258619,
+          "max": 258619,
+          "avg": 258619,
+          "median": 258619,
+          "count": 1
+        }
+      }
+    },
+    "contracts/MetaNFTAuctionUUPS.sol:MetaNFTAuctionUUPS": {
+      "sourceName": "contracts/MetaNFTAuctionUUPS.sol",
+      "contractName": "MetaNFTAuctionUUPS",
+      "proxyChain": [],
+      "deployment": {
+        "min": 2726174,
+        "max": 2726174,
+        "avg": 2726174,
+        "median": 2726174,
+        "count": 38,
+        "runtimeSize": 12282
+      },
+      "functions": null
+    },
+    "contracts/MetaNFTAuctionUUPS.sol:MetaNFTAuctionUUPS (via @openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy)": {
+      "sourceName": "contracts/MetaNFTAuctionUUPS.sol",
+      "contractName": "MetaNFTAuctionUUPS",
+      "proxyChain": [
+        "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy",
+        "contracts/MetaNFTAuctionUUPS.sol:MetaNFTAuctionUUPS"
+      ],
+      "deployment": {
+        "min": 2726174,
+        "max": 2726174,
+        "avg": 2726174,
+        "median": 2726174,
+        "count": 38,
+        "runtimeSize": 12282
+      },
+      "functions": {
+        "auctionId": {
+          "min": 28528,
+          "max": 28528,
+          "avg": 28528,
+          "median": 28528,
+          "count": 1
+        },
+        "auctions": {
+          "min": 51949,
+          "max": 51949,
+          "avg": 51949,
+          "median": 51949,
+          "count": 7
+        },
+        "bid": {
+          "min": 75272,
+          "max": 176218,
+          "avg": 125186,
+          "median": 116633,
+          "count": 16
+        },
+        "end": {
+          "min": 91981,
+          "max": 111902,
+          "avg": 96961,
+          "median": 91981,
+          "count": 4
+        },
+        "getPriceInDollar": {
+          "min": 35728,
+          "max": 35968,
+          "avg": 35788,
+          "median": 35728,
+          "count": 4
+        },
+        "getVersion": {
+          "min": 26724,
+          "max": 26724,
+          "avg": 26724,
+          "median": 26724,
+          "count": 1
+        },
+        "isEnded": {
+          "min": 31438,
+          "max": 31438,
+          "avg": 31438,
+          "median": 31438,
+          "count": 2
+        },
+        "setTokenOracle": {
+          "min": 51690,
+          "max": 51942,
+          "avg": 51820,
+          "median": 51816,
+          "count": 64
+        },
+        "start": {
+          "min": 238386,
+          "max": 258526,
+          "avg": 257648,
+          "median": 258526,
+          "count": 23
+        },
+        "tokenToOracle": {
+          "min": 29108,
+          "max": 29348,
+          "avg": 29228,
+          "median": 29228,
+          "count": 2
+        },
+        "upgradeToAndCall": {
+          "min": 38458,
+          "max": 38470,
+          "avg": 38466,
+          "median": 38470,
+          "count": 3
+        }
+      }
+    },
+    "contracts/MetaNFTAuctionUUPSV2.sol:MetaNFTAuctionUUPSV2": {
+      "sourceName": "contracts/MetaNFTAuctionUUPSV2.sol",
+      "contractName": "MetaNFTAuctionUUPSV2",
+      "proxyChain": [],
+      "deployment": {
+        "min": 2751567,
+        "max": 2751567,
+        "avg": 2751567,
+        "median": 2751567,
+        "count": 4,
+        "runtimeSize": 12396
+      },
+      "functions": null
+    },
+    "contracts/MetaNFTAuctionUUPSV2.sol:MetaNFTAuctionUUPSV2 (via @openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy)": {
+      "sourceName": "contracts/MetaNFTAuctionUUPSV2.sol",
+      "contractName": "MetaNFTAuctionUUPSV2",
+      "proxyChain": [
+        "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy",
+        "contracts/MetaNFTAuctionUUPSV2.sol:MetaNFTAuctionUUPSV2"
+      ],
+      "deployment": {
+        "min": 2751567,
+        "max": 2751567,
+        "avg": 2751567,
+        "median": 2751567,
+        "count": 4,
+        "runtimeSize": 12396
+      },
+      "functions": {
+        "auctionId": {
+          "min": 28528,
+          "max": 28528,
+          "avg": 28528,
+          "median": 28528,
+          "count": 1
+        },
+        "auctions": {
+          "min": 51883,
+          "max": 51883,
+          "avg": 51883,
+          "median": 51883,
+          "count": 1
+        },
+        "bid": {
+          "min": 176240,
+          "max": 176240,
+          "avg": 176240,
+          "median": 176240,
+          "count": 1
+        },
+        "end": {
+          "min": 111902,
+          "max": 111902,
+          "avg": 111902,
+          "median": 111902,
+          "count": 1
+        },
+        "getVersion": {
+          "min": 26724,
+          "max": 26724,
+          "avg": 26724,
+          "median": 26724,
+          "count": 1
+        },
+        "newFeature": {
+          "min": 26701,
+          "max": 26701,
+          "avg": 26701,
+          "median": 26701,
+          "count": 1
+        },
+        "start": {
+          "min": 258514,
+          "max": 258514,
+          "avg": 258514,
+          "median": 258514,
+          "count": 1
+        },
+        "tokenToOracle": {
+          "min": 29130,
+          "max": 29130,
+          "avg": 29130,
+          "median": 29130,
+          "count": 1
+        }
+      }
+    },
+    "contracts/mock/MockERC20.sol:MockERC20": {
+      "sourceName": "contracts/mock/MockERC20.sol",
+      "contractName": "MockERC20",
+      "proxyChain": [],
+      "deployment": {
+        "min": 1178741,
+        "max": 1178741,
+        "avg": 1178741,
+        "median": 1178741,
+        "count": 42,
+        "runtimeSize": 4464
+      },
+      "functions": {
+        "approve": {
+          "min": 47228,
+          "max": 47240,
+          "avg": 47240,
+          "median": 47240,
+          "count": 63
+        },
+        "balanceOf": {
+          "min": 24271,
+          "max": 24283,
+          "avg": 24277,
+          "median": 24277,
+          "count": 8
+        },
+        "mint": {
+          "min": 53464,
+          "max": 53476,
+          "avg": 53470,
+          "median": 53476,
+          "count": 63
+        },
+        "symbol": {
+          "min": 24415,
+          "max": 24415,
+          "avg": 24415,
+          "median": 24415,
+          "count": 2
+        }
+      }
+    },
+    "contracts/mock/MockOracle.sol:MockOracle": {
+      "sourceName": "contracts/mock/MockOracle.sol",
+      "contractName": "MockOracle",
+      "proxyChain": [],
+      "deployment": {
+        "min": 194417,
+        "max": 194429,
+        "avg": 194423,
+        "median": 194417,
+        "count": 83,
+        "runtimeSize": 539
+      },
+      "functions": {
+        "getPrice": {
+          "min": 23473,
+          "max": 23473,
+          "avg": 23473,
+          "median": 23473,
+          "count": 2
+        },
+        "setPrice": {
+          "min": 26654,
+          "max": 26654,
+          "avg": 26654,
+          "median": 26654,
+          "count": 1
+        }
+      }
+    }
+  }
+}

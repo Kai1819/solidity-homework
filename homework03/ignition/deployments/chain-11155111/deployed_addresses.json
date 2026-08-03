@@ -1,0 +1,9 @@
+{
+  "MetaNFTAuctionTransparent#MetaNFT": "0xE24e475F44f168090Dd0cC9b52ebe515f7a5f720",
+  "MetaNFTAuctionTransparent#MockUSDC": "0xAA7F0E4294da18a32068F51C387b157b60Fa45b4",
+  "MetaNFTAuctionTransparent#ETHUSD_Oracle": "0x08E57230a48393ca25EB7c308885BAE59Ab7C99D",
+  "MetaNFTAuctionTransparent#USDCUSD_Oracle": "0x1215cC58B60d42728ad7B88F81e349e89e6976dc",
+  "MetaNFTAuctionTransparent#AuctionImpl": "0xB356dEbb2672F2f387e4b8EdadDd2F86d6AF11E0",
+  "MetaNFTAuctionTransparent#AuctionProxy": "0x825Eaa7654782b4275EacbfbB61Cc03688e935DB",
+  "MetaNFTAuctionTransparent#Auction": "0x825Eaa7654782b4275EacbfbB61Cc03688e935DB"
+}
